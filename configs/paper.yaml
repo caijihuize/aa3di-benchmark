@@ -1,0 +1,61 @@
+protocol: paper_full17m_pdb_v1
+seed: 42
+precision: fp16
+batch_size: 1
+methods:
+  prostt5_decode_fp16_bs:
+    backend: prostt5
+    checkpoint: ${PROSTT5_MODEL}
+  esm3_aa3di_full17m_stage1:
+    backend: esm3
+    stage: 1
+    base_checkpoint: ${ESM3_STAGE1_CHECKPOINT}
+    selection_record: ${ESM3_SELECTION_RECORD}
+  esm3_aa3di_full17m_pdb_stage2:
+    backend: esm3
+    stage: 2
+    base_checkpoint: ${ESM3_STAGE1_CHECKPOINT}
+    aa2di_adapter: ${ESM3_AA2DI_ADAPTER}
+    di2aa_adapter: ${ESM3_DI2AA_ADAPTER}
+    selection_record: ${ESM3_SELECTION_RECORD}
+datasets:
+  stage1_test474:
+    format: hf
+    source: ${AA3DI_STAGE1_DATA}
+    split: test
+    expected_count: 474
+  pdb_test500:
+    format: hf
+    source: ${AA3DI_PDB_DATA}
+    split: test
+    expected_count: 500
+  scope208:
+    format: fasta
+    aa: ${AA3DI_SCOPE_ROOT}/GT_fasta/DB_aa.fasta
+    di: ${AA3DI_SCOPE_ROOT}/GT_fasta/DB_di.fasta
+    expected_count: 13920
+speed:
+  source_dataset: scope208
+  lengths: [64, 128, 256, 384, 510]
+  per_length: 10
+  warmup_batches: 3
+  repeats: 5
+  direction: aa2di
+homology:
+  labels: ${AA3DI_SCOPE_ROOT}/labels/scop_lookup.tsv
+  structure_db: ${AA3DI_SCOPE_ROOT}/DB/foldseek_DB/DB
+  sequence_db: ${AA3DI_SCOPE_ROOT}/DB/mmseqs_DB/DB
+  foldseek: ${FOLDSEEK_BIN}
+  mmseqs: ${MMSEQS_BIN}
+  foldseek_version: 10-941cd33
+  mmseqs_version: 18-8cc5c
+  threads: 16
+  catalog_count: 13920
+  eligible_queries: 5046
+  foldseek_search: {sensitivity: 9.5, max_seqs: 2000, evalue: 10}
+  mmseqs_search: {sensitivity: 7.5, max_seqs: 2000, evalue: 10000}
+bootstrap: {replicates: 10000, seed: 42}
+comparisons:
+  - [esm3_aa3di_full17m_pdb_stage2, prostt5_decode_fp16_bs]
+  - [esm3_aa3di_full17m_pdb_stage2, foldseek]
+  - [esm3_aa3di_full17m_pdb_stage2, mmseqs]

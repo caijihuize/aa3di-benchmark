@@ -1,0 +1,7 @@
+AA–3Di Benchmark
+Copyright 2026 AA–3Di Benchmark contributors.
+
+This repository contains evaluation and AA3Di adaptation code migrated from
+its author's experimental workspace. Model weights and processed scientific
+data are not included. Third-party libraries and artifacts retain their own
+licenses; see docs/third_party.md.

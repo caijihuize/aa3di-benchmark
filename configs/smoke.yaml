@@ -1,0 +1,23 @@
+protocol: synthetic_smoke_v1
+seed: 42
+precision: fp32
+batch_size: 1
+methods: {}
+datasets:
+  tiny:
+    format: fasta
+    aa: ../tests/fixtures/aa.fasta
+    di: ../tests/fixtures/di.fasta
+    expected_count: 2
+smoke:
+  prediction: ../tests/fixtures/prediction.fasta
+  labels: ../tests/fixtures/labels.tsv
+  hits: ../tests/fixtures/hits.tsv
+speed:
+  source_dataset: tiny
+  lengths: [2, 4]
+  per_length: 2
+  warmup_batches: 1
+  repeats: 2
+  direction: aa2di
+bootstrap: {replicates: 10000, seed: 42}

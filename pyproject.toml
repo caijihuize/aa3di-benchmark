@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aa3di-benchmark"
+version = "0.1.0"
+description = "Reproducible bidirectional AA–3Di translation, speed and remote homology evaluation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["numpy==2.2.6", "pandas==2.3.3", "matplotlib==3.10.9", "PyYAML==6.0.3"]
+
+[project.optional-dependencies]
+prostt5 = ["torch==2.12.1", "transformers==4.57.3", "sentencepiece==0.2.1", "protobuf==7.35.1"]
+esm3 = ["torch==2.5.1", "esm==3.2.1.post1", "transformers==4.48.1"]
+data = ["datasets>=2.19,<5"]
+
+[project.scripts]
+aa3di-benchmark = "aa3di_benchmark.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
